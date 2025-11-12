@@ -16,12 +16,10 @@ namespace Kirjad.Models
 
         public DateTime LoodudKuupaev { get; set; } = DateTime.Now;
 
-        // Viited teistele kirjadele (many-to-many)
-        [JsonIgnore] // Ei saadeta JSON-is
+        [JsonIgnore]
         public virtual ICollection<Kiri> SeotudKirjad { get; set; } = new List<Kiri>();
 
-        // Kirjad, mis viitavad sellele kirjale
-        [JsonIgnore] // Ei saadeta JSON-is
+        [JsonIgnore]
         public virtual ICollection<Kiri> TagasiViited { get; set; } = new List<Kiri>();
 
         public virtual string Kirjuta()

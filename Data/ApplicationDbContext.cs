@@ -10,5 +10,15 @@ namespace Kirjad.Data
         }
         public DbSet<Kiri> Kirjad { get; set; }
         public DbSet<Veebiuudis> Veebiuudised { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Kiri>()
+                .HasMany(k => k.SeotudKirjad)
+                .WithMany(k => k.TagasiViited)
+                .UsingEntity(j => j.ToTable("KirjadViited"));
+        }
     }
 }

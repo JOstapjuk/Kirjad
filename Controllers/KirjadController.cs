@@ -27,7 +27,7 @@ namespace Kirjad.Controllers
 
         // GET: api/Kirjad/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Kiri>> GetKiri(int id)
+        public async Task<ActionResult> GetKiri(int id)
         {
             var kiri = await _context.Kirjad
                 .Include(k => k.SeotudKirjad)
@@ -39,7 +39,31 @@ namespace Kirjad.Controllers
                 return NotFound();
             }
 
-            return kiri;
+            var response = new
+            {
+                kiri.Id,
+                kiri.Pealkiri,
+                kiri.Sisu,
+                kiri.UnikaalsekKood,
+                kiri.LoodudKuupaev,
+                Url = (kiri as Veebiuudis)?.URL,
+                SeotudKirjad = kiri.SeotudKirjad.Select(sk => new
+                {
+                    sk.Id,
+                    sk.Pealkiri,
+                    sk.UnikaalsekKood,
+                    Url = (sk as Veebiuudis)?.URL
+                }).ToList(),
+                TagasiViited = kiri.TagasiViited.Select(tv => new
+                {
+                    tv.Id,
+                    tv.Pealkiri,
+                    tv.UnikaalsekKood,
+                    Url = (tv as Veebiuudis)?.URL
+                }).ToList()
+            };
+
+            return Ok(response);
         }
 
         // GET: api/Kirjad/kood/KIRI-001
@@ -88,6 +112,7 @@ namespace Kirjad.Controllers
             // Genereeri unikaalne kood, kui puudub
             if (string.IsNullOrEmpty(kiri.UnikaalsekKood))
             {
+                // https://learn.microsoft.com/en-us/dotnet/api/system.guid.newguid?view=net-9.0
                 kiri.UnikaalsekKood = $"KIRI-{Guid.NewGuid().ToString().Substring(0, 8).ToUpper()}";
             }
 
