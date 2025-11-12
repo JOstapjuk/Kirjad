@@ -1,0 +1,6 @@
+@elektrijaam_HostAddress = http://localhost:5164
+
+GET {{elektrijaam_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
